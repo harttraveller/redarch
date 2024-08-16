@@ -90,9 +90,9 @@ class ZST_JSONL:
             count += 1
         return data
 
-    def ingest(
+    def apply(
         self,
-        handler: Callable[[dict[str, Any]], None] = lambda x: None,
+        function: Callable[[dict[str, Any]], None] = lambda x: None,
         progress: bool = True,
         stop: int = -1,
         reset: bool = True,
@@ -114,7 +114,7 @@ class ZST_JSONL:
         count: int = 0
         # todo.fix: if on each iter is slow
         for line in tqdm(self, disable=not progress, total=None if stop < 0 else stop):
-            handler(line)
+            function(line)
             if count == stop:
                 break
             count += 1
