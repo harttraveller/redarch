@@ -70,7 +70,7 @@ class ZSTJSONL:
         # todo.fix: if on each iter is slow
         for line in tqdm(self, disable=not progress, total=None if stop < 0 else stop):
             data.append(handler(line))
-            count += 1
             if count == stop:
                 break
+            count += 1
         return data
