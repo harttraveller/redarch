@@ -48,7 +48,7 @@ class ZSTJSONL:
             else:
                 raise StopIteration()
 
-    def process(
+    def parse(
         self,
         handler: Callable[[dict[str, Any]], dict[str, Any]] = lambda x: x,
         n: Optional[int] = None,
@@ -62,17 +62,3 @@ class ZSTJSONL:
                 if count == n:
                     break
         return data
-
-    def ingest(
-        self,
-        handler: Callable[[dict[str, Any]], dict[str, Any]] = lambda x: x,
-        n: Optional[int] = None,
-    ) -> None:
-        for line in tqdm(self):
-            count = 0
-            for line in tqdm(self):
-                handler(line)
-                count += 1
-                if n:
-                    if count == n:
-                        break
