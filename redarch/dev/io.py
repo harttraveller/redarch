@@ -6,6 +6,117 @@ from zstandard import ZstdDecompressor
 from redarch import var
 
 
+class ZST_LINES:
+    def __init__(
+        self,
+        path: str | Path,
+        size: int = 1 << 20,
+    ) -> None:
+        """
+        Interface to read in data from compressed ZST archive file line by line
+
+        Args:
+            path (str | Path): The path to the ZST file
+            size (int, optional): The chunk size of loaded data in bytes. Defaults to 1<<20.
+        """
+        self.path = path
+        self.size = size
+        self.reset()
+
+    def reset(self) -> None:
+        self.stream = ZstdDecompressor(
+            max_window_size=var.ZST_MAX_WINDOW_SIZE_CONSTANT
+        ).stream_reader(open(self.path, "rb"))
+        self.buffer = b""
+        self.lines = []
+
+    def __iter__(self) -> Generator[bytes, None, None]:
+        while True:
+            try:
+                yield next(self)
+            except StopIteration:
+                break
+
+    def __next__(self) -> bytes:
+        if len(self.lines):
+            return self.lines.pop(0)
+        else:
+            chunk = self.stream.read(self.size)
+            if chunk:
+                self.lines = (self.buffer + chunk).split(b"\n")
+                self.buffer = self.lines[-1]
+                self.lines = self.lines[:-1]
+                return self.lines.pop(0)
+            else:
+                raise StopIteration()
+
+    def readline(self) -> bytes:
+        return self.__next__()
+
+    def readlines(self, n: int) -> list[bytes]:
+        return [self.readline() for _ in range(n)]
+
+    def sample(
+        self,
+        parser: Callable[[bytes], Any] = lambda x: x,
+        progress: bool = True,
+        stop: int = -1,
+        reset: bool = True,
+    ) -> list[Any]:
+        """
+        Read in objects line by line.
+
+        Args:
+            parser (Callable[[dict[str, Any], Any]]): Custom parser for each object.
+            progress (bool): Whether to show the progress with tqdm. Defaults to True.
+            stop (int): Line to stop at. If -1, continues until end of file. Defaults to -1.
+            reset (bool): Whether to restart at the beginning of the file.
+
+        Returns:
+            list[Any]: Array of parsed objects.
+        """
+        if reset:
+            self.reset()
+        data: list[Any] = list()
+        count: int = 0
+        # todo.fix: if on each iter is slow
+        for line in tqdm(self, disable=not progress, total=None if stop < 0 else stop):
+            data.append(parser(line))
+            if count == stop:
+                break
+            count += 1
+        return data
+
+    def apply(
+        self,
+        function: Callable[[bytes], None] = lambda x: None,
+        progress: bool = True,
+        stop: int = -1,
+        reset: bool = True,
+    ) -> None:
+        """
+        Apply a function to objects, may be useful for ingesting data.
+
+        Args:
+            handler (Callable[[dict[str, Any], Any]]): Custom handler for each object.
+            progress (bool): Whether to show the progress with tqdm. Defaults to True.
+            stop (int): Line to stop at. If -1, continues until end of file. Defaults to -1.
+            reset (bool): Whether to restart at the beginning of the file.
+
+        Returns:
+            list[Any]: Array of parsed objects.
+        """
+        if reset:
+            self.reset()
+        count: int = 0
+        # todo.fix: if on each iter is slow
+        for line in tqdm(self, disable=not progress, total=None if stop < 0 else stop):
+            function(line)
+            if count == stop:
+                break
+            count += 1
+
+
 class ZST_JSONL:
     def __init__(
         self,
