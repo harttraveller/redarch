@@ -50,7 +50,7 @@ class ZSTJSONL:
 
     def read(
         self,
-        handler: Callable[[dict[str, Any]], Any] = lambda x: x,
+        parser: Callable[[dict[str, Any]], Any] = lambda x: x,
         progress: bool = True,
         stop: int = -1,
     ) -> list[Any]:
@@ -58,19 +58,44 @@ class ZSTJSONL:
         Read in objects line by line.
 
         Args:
-            handler (Callable[[dict[str, Any], Any]]): Custom Handler or parser for each object.
+            parser (Callable[[dict[str, Any], Any]]): Custom parser for each object.
             progress (bool): Whether to show the progress with tqdm. Defaults to True.
             stop (int): Line to stop at. If -1, continues until end of file. Defaults to -1.
 
         Returns:
             list[Any]: Array of parsed objects.
         """
-        data = list()
-        count = 0
+        data: list[Any] = list()
+        count: int = 0
         # todo.fix: if on each iter is slow
         for line in tqdm(self, disable=not progress, total=None if stop < 0 else stop):
-            data.append(handler(line))
+            data.append(parser(line))
             if count == stop:
                 break
             count += 1
         return data
+
+    def ingest(
+        self,
+        handler: Callable[[dict[str, Any]], None] = lambda x: None,
+        progress: bool = True,
+        stop: int = -1,
+    ) -> None:
+        """
+        Ingest objects, passing each one to a custom handler.
+
+        Args:
+            handler (Callable[[dict[str, Any], Any]]): Custom handler for each object.
+            progress (bool): Whether to show the progress with tqdm. Defaults to True.
+            stop (int): Line to stop at. If -1, continues until end of file. Defaults to -1.
+
+        Returns:
+            list[Any]: Array of parsed objects.
+        """
+        count: int = 0
+        # todo.fix: if on each iter is slow
+        for line in tqdm(self, disable=not progress, total=None if stop < 0 else stop):
+            handler(line)
+            if count == stop:
+                break
+            count += 1
