@@ -24,9 +24,9 @@ class ZST_JSONL:
         """
         self.path = path
         self.size = size
-        self.__init_stream()
+        self.reset()
 
-    def __init_stream(self) -> None:
+    def reset(self) -> None:
         self.stream = ZstdDecompressor(
             max_window_size=var.ZST_MAX_WINDOW_SIZE_CONSTANT
         ).stream_reader(open(self.path, "rb"))
@@ -53,12 +53,18 @@ class ZST_JSONL:
             else:
                 raise StopIteration()
 
+    def readline(self) -> dict[str, Any]:
+        return self.__next__()
+
+    def readlines(self, n: int) -> list[dict[str, Any]]:
+        return [self.readline() for _ in range(n)]
+
     def sample(
         self,
         parser: Callable[[dict[str, Any]], Any] = lambda x: x,
         progress: bool = True,
         stop: int = -1,
-        restart: bool = True,
+        reset: bool = True,
     ) -> list[Any]:
         """
         Read in objects line by line.
@@ -67,13 +73,13 @@ class ZST_JSONL:
             parser (Callable[[dict[str, Any], Any]]): Custom parser for each object.
             progress (bool): Whether to show the progress with tqdm. Defaults to True.
             stop (int): Line to stop at. If -1, continues until end of file. Defaults to -1.
-            restart (bool): Whether to restart at the beginning of the file.
+            reset (bool): Whether to restart at the beginning of the file.
 
         Returns:
             list[Any]: Array of parsed objects.
         """
-        if restart:
-            self.__init_stream()
+        if reset:
+            self.reset()
         data: list[Any] = list()
         count: int = 0
         # todo.fix: if on each iter is slow
@@ -89,7 +95,7 @@ class ZST_JSONL:
         handler: Callable[[dict[str, Any]], None] = lambda x: None,
         progress: bool = True,
         stop: int = -1,
-        restart: bool = True,
+        reset: bool = True,
     ) -> None:
         """
         Ingest objects, passing each one to a custom handler.
@@ -98,13 +104,13 @@ class ZST_JSONL:
             handler (Callable[[dict[str, Any], Any]]): Custom handler for each object.
             progress (bool): Whether to show the progress with tqdm. Defaults to True.
             stop (int): Line to stop at. If -1, continues until end of file. Defaults to -1.
-            restart (bool): Whether to restart at the beginning of the file.
+            reset (bool): Whether to restart at the beginning of the file.
 
         Returns:
             list[Any]: Array of parsed objects.
         """
-        if restart:
-            self.__init_stream()
+        if reset:
+            self.reset()
         count: int = 0
         # todo.fix: if on each iter is slow
         for line in tqdm(self, disable=not progress, total=None if stop < 0 else stop):
