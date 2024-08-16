@@ -8,7 +8,7 @@ from zstandard import ZstdDecompressor
 from redarch import var
 
 
-class ZSTJSONL:
+class ZST_JSONL:
     def __init__(
         self,
         path: str | Path,
