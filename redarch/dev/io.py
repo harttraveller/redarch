@@ -52,7 +52,7 @@ class ZSTJSONL:
         self,
         handler: Callable[[dict[str, Any]], Any] = lambda x: x,
         progress: bool = True,
-        stop: Optional[int] = None,
+        stop: int = -1,
     ) -> list[Any]:
         """
         Read in objects line by line.
@@ -60,17 +60,17 @@ class ZSTJSONL:
         Args:
             handler (Callable[[dict[str, Any], Any]]): Custom Handler or parser for each object.
             progress (bool): Whether to show the progress with tqdm. Defaults to True.
-            stop (int, Optional): Line to stop at. If None, continues until end of file. Defaults to None.
+            stop (int): Line to stop at. If -1, continues until end of file. Defaults to -1.
 
         Returns:
             list[Any]: Array of parsed objects.
         """
         data = list()
         count = 0
+        # todo.fix: if on each iter is slow
         for line in tqdm(self, disable=not progress):
             data.append(handler(line))
             count += 1
-            if stop:
-                if count == stop:
-                    break
+            if count == stop:
+                break
         return data
