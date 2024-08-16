@@ -28,7 +28,7 @@ class ZSTJSONL:
         self.buffer = b""
         self.lines = []
 
-    def __iter__(self) -> Generator[dict, None, None]:
+    def __iter__(self) -> Generator[dict[str, Any], None, None]:
         while True:
             try:
                 yield next(self)
@@ -48,17 +48,29 @@ class ZSTJSONL:
             else:
                 raise StopIteration()
 
-    def parse(
+    def read(
         self,
-        handler: Callable[[dict[str, Any]], dict[str, Any]] = lambda x: x,
-        n: Optional[int] = None,
+        handler: Callable[[dict[str, Any]], Any] = lambda x: x,
+        progress: bool = True,
+        stop: Optional[int] = None,
     ) -> list[Any]:
+        """
+        Read in objects line by line.
+
+        Args:
+            handler (Callable[[dict[str, Any], Any]]): Custom Handler or parser for each object.
+            progress (bool): Whether to show the progress with tqdm. Defaults to True.
+            stop (int, Optional): Line to stop at. If None, continues until end of file. Defaults to None.
+
+        Returns:
+            list[Any]: Array of parsed objects.
+        """
         data = list()
         count = 0
-        for line in tqdm(self):
+        for line in tqdm(self, disable=not progress):
             data.append(handler(line))
             count += 1
-            if n:
-                if count == n:
+            if stop:
+                if count == stop:
                     break
         return data
