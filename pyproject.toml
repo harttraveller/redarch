@@ -55,6 +55,7 @@ optional = true
 
 [tool.poetry.group.docs.dependencies]
 mkdocs-material = "^9.5.31"
+mkdocs-jupyter = "^0.24.8"
 
 [tool.poetry.group.todo]
 optional = true
