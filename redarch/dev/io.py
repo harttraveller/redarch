@@ -1,11 +1,8 @@
-from __future__ import annotations
-
 import orjson
 from tqdm import tqdm
 from pathlib import Path
-from typing import Callable, Generator, Optional, Any
+from typing import Callable, Generator, Any
 from zstandard import ZstdDecompressor
-from zstandard.backend_cffi import ZstdDecompressionReader
 from redarch import var
 
 
