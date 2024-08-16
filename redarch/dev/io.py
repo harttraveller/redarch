@@ -68,7 +68,7 @@ class ZSTJSONL:
         data = list()
         count = 0
         # todo.fix: if on each iter is slow
-        for line in tqdm(self, disable=not progress):
+        for line in tqdm(self, disable=not progress, total=None if stop < 0 else stop):
             data.append(handler(line))
             count += 1
             if count == stop:
