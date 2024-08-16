@@ -53,6 +53,7 @@ class ZST_JSONL:
         parser: Callable[[dict[str, Any]], Any] = lambda x: x,
         progress: bool = True,
         stop: int = -1,
+        seek: Optional[int] = None,
     ) -> list[Any]:
         """
         Read in objects line by line.
@@ -61,10 +62,13 @@ class ZST_JSONL:
             parser (Callable[[dict[str, Any], Any]]): Custom parser for each object.
             progress (bool): Whether to show the progress with tqdm. Defaults to True.
             stop (int): Line to stop at. If -1, continues until end of file. Defaults to -1.
+            seek (int, Optional): The byte to start from. If None, continues from where left off.
 
         Returns:
             list[Any]: Array of parsed objects.
         """
+        if not (seek is None):
+            self.stream.seek(seek)
         data: list[Any] = list()
         count: int = 0
         # todo.fix: if on each iter is slow
@@ -80,6 +84,7 @@ class ZST_JSONL:
         handler: Callable[[dict[str, Any]], None] = lambda x: None,
         progress: bool = True,
         stop: int = -1,
+        seek: Optional[int] = None,
     ) -> None:
         """
         Ingest objects, passing each one to a custom handler.
@@ -88,10 +93,13 @@ class ZST_JSONL:
             handler (Callable[[dict[str, Any], Any]]): Custom handler for each object.
             progress (bool): Whether to show the progress with tqdm. Defaults to True.
             stop (int): Line to stop at. If -1, continues until end of file. Defaults to -1.
+            seek (int, Optional): The byte to start from. If None, continues from where left off.
 
         Returns:
             list[Any]: Array of parsed objects.
         """
+        if not (seek is None):
+            self.stream.seek(seek)
         count: int = 0
         # todo.fix: if on each iter is slow
         for line in tqdm(self, disable=not progress, total=None if stop < 0 else stop):
