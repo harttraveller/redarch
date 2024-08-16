@@ -26,7 +26,7 @@ class ZSTJSONL:
             except StopIteration:
                 break
 
-    def __next__(self) -> dict:
+    def __next__(self) -> dict[str, Any]:
         if len(self.lines):
             return orjson.loads(self.lines.pop(0))
         else:
