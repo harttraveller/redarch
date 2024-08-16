@@ -7,7 +7,11 @@ from zstandard import ZstdDecompressor
 
 
 class ZSTJSONL:
-    def __init__(self, path: str, size: int = 1 << 20) -> None:
+    def __init__(
+        self,
+        path: str,
+        size: int = 1 << 20,
+    ) -> None:
         self.stream = ZstdDecompressor(max_window_size=1 << 31).stream_reader(
             open(path, "rb")
         )
