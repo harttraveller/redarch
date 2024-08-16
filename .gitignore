@@ -1,3 +1,36 @@
+# Custom
+local
+
+# Obsidian
+.obsidian
+.trash
+
+# poetry
+poetry.lock
+poetry.toml
+
+# Cookiecutter
+output/
+python_boilerplate/
+cookiecutter-pypackage-env/
+
+# MacOS
+*.DS_Store
+.AppleDouble
+.LSOverride
+.AppleDB
+.AppleDesktop
+.apdisk
+.DocumentRevisions-V100
+.fseventsd
+.Spotlight-V100
+.TemporaryItems
+.Trashes
+.VolumeIcon.icns
+.com.apple.timemachine.donotpresent
+Network Trash Folder
+Temporary Items
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
