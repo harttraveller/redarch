@@ -5,7 +5,7 @@ build-backend = "poetry.core.masonry.api"
 [tool.poetry]
 name = "redarch"
 version = "0.1.0"
-description = "Wikimedia project utilities."
+description = "Reddit archive utilities."
 readme = "README.md"
 license = "MIT"
 # documentation = "https://harttraveller.com/redarch"
