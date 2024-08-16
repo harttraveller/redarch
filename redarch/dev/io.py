@@ -48,7 +48,7 @@ class ZST_JSONL:
             else:
                 raise StopIteration()
 
-    def read(
+    def sample(
         self,
         parser: Callable[[dict[str, Any]], Any] = lambda x: x,
         progress: bool = True,
