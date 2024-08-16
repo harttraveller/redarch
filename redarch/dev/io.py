@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import orjson
 from tqdm import tqdm
-from typing import Callable, Generator, Any
+from typing import Callable, Generator, Optional, Any
 from zstandard import ZstdDecompressor
 
 
@@ -35,7 +35,11 @@ class ZSTJSONL:
             else:
                 raise StopIteration()
 
-    def process(self, handler: Callable = lambda x: x, n: int = None) -> list[Any]:
+    def process(
+        self,
+        handler: Callable[[dict[str, Any]], dict[str, Any]] = lambda x: x,
+        n: Optional[int] = None,
+    ) -> list[Any]:
         data = list()
         count = 0
         for line in tqdm(self):
