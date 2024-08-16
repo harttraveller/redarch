@@ -98,7 +98,7 @@ class ZST_JSONL:
         reset: bool = True,
     ) -> None:
         """
-        Ingest objects, passing each one to a custom handler.
+        Apply a function to objects, may be useful for ingesting data.
 
         Args:
             handler (Callable[[dict[str, Any], Any]]): Custom handler for each object.
