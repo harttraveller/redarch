@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import orjson
 from tqdm import tqdm
-from typing import Callable, Any
+from typing import Callable, Generator, Any
 from zstandard import ZstdDecompressor
 
 
@@ -15,7 +15,7 @@ class ZSTJSONL:
         self.buffer = b""
         self.lines = []
 
-    def __iter__(self) -> dict:
+    def __iter__(self) -> Generator[dict, None, None]:
         while True:
             try:
                 yield next(self)
