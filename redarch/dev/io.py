@@ -5,6 +5,7 @@ from tqdm import tqdm
 from pathlib import Path
 from typing import Callable, Generator, Optional, Any
 from zstandard import ZstdDecompressor
+from redarch import var
 
 
 class ZSTJSONL:
@@ -13,9 +14,16 @@ class ZSTJSONL:
         path: str | Path,
         size: int = 1 << 20,
     ) -> None:
-        self.stream = ZstdDecompressor(max_window_size=1 << 31).stream_reader(
-            open(path, "rb")
-        )
+        """
+        Interface for JSONL data in compressed ZST archive file.
+
+        Args:
+            path (str | Path): The path to the ZST file containing JSONL data.
+            size (int, optional): The chunk size of loaded data in bytes. Defaults to 1<<20.
+        """
+        self.stream = ZstdDecompressor(
+            max_window_size=var.ZST_MAX_WINDOW_SIZE_CONSTANT
+        ).stream_reader(open(path, "rb"))
         self.size = size
         self.buffer = b""
         self.lines = []
