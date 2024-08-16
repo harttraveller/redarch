@@ -54,7 +54,11 @@ class ZSTJSONL:
                     break
         return data
 
-    def ingest(self, handler: Callable = lambda x: x, n: int = None) -> None:
+    def ingest(
+        self,
+        handler: Callable[[dict[str, Any]], dict[str, Any]] = lambda x: x,
+        n: Optional[int] = None,
+    ) -> None:
         for line in tqdm(self):
             count = 0
             for line in tqdm(self):
