@@ -14,14 +14,14 @@ class Subreddit(SQLModel, table=True):
         unique=True,
         description="Unique subreddit ID, eg: 't5_6'.",
     )
-    created: datetime = Field(
-        index=True,
-        description="Subreddit creation timestamp.",
-    )
     name: str = Field(
         unique=True,
         index=True,
         description="Natural name of the subreddit.",
+    )
+    created: datetime = Field(
+        index=True,
+        description="Subreddit creation timestamp.",
     )
 
 
