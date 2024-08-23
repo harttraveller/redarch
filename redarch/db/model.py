@@ -41,12 +41,16 @@ class Subreddit(SQLModel, table=True):
 
     @property
     def url(self) -> str:
-        """Link to main subreddit page, defaults to old reddit."""
+        """
+        Link to main subreddit page, defaults to old reddit.
+        """
         return f"https://old.reddit.com/r/{self.name}"
 
     @property
     def api(self) -> str:
-        """Link to reddit API with full and up to date information."""
+        """
+        Link to reddit API with full and up to date information.
+        """
         return f"https://www.reddit.com/api/info.json?id={self.guid}"
 
 
