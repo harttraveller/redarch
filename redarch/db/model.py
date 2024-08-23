@@ -54,10 +54,18 @@ class Subreddit(SQLModel, table=True):
         return f"https://www.reddit.com/api/info.json?id={self.guid}"
 
 
-class Submission(SQLModel, table=True): ...
-
-
 class User(SQLModel, table=True): ...
+
+
+# class Submission(SQLModel, table=True):
+#     id: Optional[int] = Field(default=None, primary_key=True)
+
+#     user:
+#     subreddit: Optional[int] = Field(default=None, foreign_key="subreddit.id")
+#     created: datetime = Field(
+#         index=True,
+#         description="Subreddit creation timestamp.",
+#     )
 
 
 class Comment(SQLModel, table=True): ...
