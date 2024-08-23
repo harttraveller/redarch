@@ -9,19 +9,19 @@ class Subreddit(SQLModel, table=True):
         primary_key=True,
         description="Primary database key used by SQLite.",
     )
-    uid: str = Field(
+    created: datetime = Field(
+        index=True,
+        description="Subreddit creation timestamp.",
+    )
+    guid: str = Field(
         index=True,
         unique=True,
-        description="Unique subreddit ID, eg: 't5_6'.",
+        description="Globally unique subreddit ID, eg: 't5_6'.",
     )
     name: str = Field(
         unique=True,
         index=True,
         description="Natural name of the subreddit, eg: 'news'.",
-    )
-    created: datetime = Field(
-        index=True,
-        description="Subreddit creation timestamp.",
     )
 
 
