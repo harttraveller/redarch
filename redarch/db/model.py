@@ -1,0 +1,13 @@
+from sqlmodel import SQLModel, Field
+
+
+class Submission(SQLModel, table=True): ...
+
+
+class User(SQLModel, table=True): ...
+
+
+class Subreddit(SQLModel, table=True): ...
+
+
+class Comment(SQLModel, table=True): ...
