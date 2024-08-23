@@ -1,3 +1,4 @@
+from pathlib import Path
 from typing import Optional
 from datetime import datetime
 from sqlmodel import SQLModel, Session, Field, create_engine
@@ -56,3 +57,13 @@ class User(SQLModel, table=True): ...
 
 
 class Comment(SQLModel, table=True): ...
+
+
+def session(database: str | Path, echo: bool = False) -> Session:
+    engine = create_engine(str(database), echo=echo)
+    return Session(engine)
+
+
+def create(database: str | Path, echo: bool = True) -> None:
+    engine = create_engine(str(database), echo=echo)
+    SQLModel.metadata.create_all(engine)
