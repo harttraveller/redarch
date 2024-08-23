@@ -17,7 +17,7 @@ class Subreddit(SQLModel, table=True):
     name: str = Field(
         unique=True,
         index=True,
-        description="Natural name of the subreddit.",
+        description="Natural name of the subreddit, eg: 'news'.",
     )
     created: datetime = Field(
         index=True,
