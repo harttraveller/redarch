@@ -23,6 +23,20 @@ class Subreddit(SQLModel, table=True):
         index=True,
         description="Natural name of the subreddit, eg: 'news'.",
     )
+    info: str = Field(
+        index=True,
+        description="Dynamic combination of 'title', 'title_header', 'description', 'public_description'.",
+    )
+    lang: Optional[str] = Field(
+        index=True,
+        default=None,
+        description="ISO 639 Set 1 two letter language code.",
+    )
+    nsfw: Optional[bool] = Field(
+        index=True,
+        default=None,
+        description="Whether the subreddit is 'not safe for work'.",
+    )
 
 
 class Submission(SQLModel, table=True): ...
